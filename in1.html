@@ -91,18 +91,21 @@
                 }
             });
 
-            // 如果你已经集成了 Google Analytics，可以使用以下代码：
-            if (window.gtag) {
-                gtag('event', 'button_selection', {
-                    'event_category': 'Button',
-                    'event_label': selectedButtons.join(', '),  // 选中的按钮 ID 列表
-                    'value': selectedButtons.length  // 选中的按钮数量
-                });
+            // 将选中的按钮信息转为字符串
+            const selectedButtonsString = selectedButtons.join(', ');
+
+            // 使用 Google Analytics 发送事件
+           if (window.gtag) {
+               gtag('event', 'button_selection', {
+                 'event_category': 'Button',
+                 'event_label': selectedButtonsString,  // 选中的按钮 ID 列表
+                 'value': selectedButtons.length  // 选中的按钮数量
+              });
             }
 
             // 打印选中的按钮状态（仅供调试）
-            console.log('选中的按钮：', selectedButtons.join(', '));
-        }
+            console.log('选中的按钮：', selectedButtonsString);
+       }
     </script>
 
     <!-- Google Analytics 插入代码 -->
