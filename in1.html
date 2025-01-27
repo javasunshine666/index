@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按钮选中统计</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        button.selected {
+            background-color: #4caf50;  /* 选中状态的绿色 */
+            color: white;
+            border-color: #45a049;  /* 选中状态的边框颜色 */
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .submit-btn {
+            padding: 15px 30px;
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #008cba;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>请选择按钮</h1>
+
+    <div class="button-group">
+        <button id="button1">1</button>
+        <button id="button2">2</button>
+        <button id="button3">3</button>
+        <button id="button4">4</button>
+        <button id="button5">5</button>
+        <button id="button6">6</button>
+        <button id="button7">7</button>
+        <button id="button8">8</button>
+        <button id="button9">9</button>
+        <button id="button0">0</button>
+    </div>
+
+    <button class="submit-btn" onclick="submitSelection()">提交</button>
+
+    <script>
+        // 按钮选中状态管理
+        const buttons = document.querySelectorAll('button[id^="button"]');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 切换选中状态
+                button.classList.toggle('selected');
+            });
+        });
+
+        // 提交选中状态
+        function submitSelection() {
+            // 记录选中的按钮
+            let selectedButtons = [];
+            buttons.forEach(button => {
+                if (button.classList.contains('selected')) {
+                    selectedButtons.push(button.id);  // 记录选中的按钮ID
+                }
+            });
+
+            // 如果你已经集成了 Google Analytics，可以使用以下代码：
+            if (window.gtag) {
+                gtag('event', 'button_selection', {
+                    'event_category': 'Button',
+                    'event_label': selectedButtons.join(', '),  // 选中的按钮 ID 列表
+                    'value': selectedButtons.length  // 选中的按钮数量
+                });
+            }
+
+            // 打印选中的按钮状态（仅供调试）
+            console.log('选中的按钮：', selectedButtons.join(', '));
+        }
+    </script>
+
+    <!-- Google Analytics 插入代码 -->
+    <!-- 请替换为你自己的 Google Analytics 追踪 ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_TRACKING_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'YOUR_GA_TRACKING_ID');  // 请替换为你的 Google Analytics 追踪 ID
+    </script>
+
+</body>
+</html>
