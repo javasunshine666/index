@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"> <!-- 设置页面字符编码为UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字体大小与主题切换</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #f4f4f9; /* 设置整个页面的背景色 */
+            color: #333; /* 默认字体颜色为黑色 */
+        }
+        h1 {
+            font-size: 32px; /* 标题字体大小 */
+            font-weight: bold; /* 标题加粗 */
+            text-align: left; /* 标题左对齐 */
+            margin: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ccc; /* 标题下方添加分割线 */
+        }
+        .content {
+            margin: 20px;
+            word-wrap: break-word;
+            text-align: left; /* 文字左对齐 */
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px; /* 卡片式布局 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 卡片阴影效果 */
+            white-space: pre-wrap; /* 保留换行符和空格 */
+        }
+        .content p {
+            margin: 10px 0; /* 段落之间的间距 */
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 8px 16px;  /* 缩小按钮尺寸 */
+            margin: 10px;
+            font-size: 12px; /* 缩小字体 */
+            font-weight: bold;
+            border: none;
+            border-radius: 30px; /* 圆角按钮 */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+        }
+        /* 背景颜色渐变 */
+        .light {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0); /* 渐变背景 */
+            color: #333;
+        }
+        .dark {
+            background: linear-gradient(135deg, #333, #444);
+            color: white;
+        }
+        .eye-care {
+            background: linear-gradient(135deg, #e9f5e9, #cfe7c7); /* 护眼背景 */
+            color: #333;
+        }
+        .night {
+            background: linear-gradient(135deg, #121212, #333);
+            color: #e0e0e0;
+        }
+        /* 鼠标悬停效果 */
+        button:hover {
+            transform: scale(1.05); /* 稍微放大 */
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* 增强阴影 */
+        }
+        /* 点击效果 */
+        button:active {
+            transform: scale(0.98); /* 点击时缩小 */
+        }
+        /* 分割线的样式 */
+        .section-divider {
+            margin: 20px 0;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0.2), rgba(0,0,0,0.1)); /* 渐变分割线 */
+            border-radius: 5px;
+        }
+        .large {
+            font-size: 36px;
+        }
+        .medium {
+            font-size: 24px;
+        }
+        .small {
+            font-size: 16px;
+        }
+        img {
+            width: 100%; /* 图片宽度自适应屏幕宽度 */
+            height: auto; /* 保持图片比例 */
+            border-radius: 10px; /* 图片圆角 */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 图片阴影 */
+        }
+        video {
+            width: 100%; /* 视频宽度自适应屏幕宽度 */
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px; /* 视频圆角 */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 视频阴影 */
+        }
+        .page {
+            display: none;
+            padding-bottom: 50px;
+        }
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body id="body" class="eye-care">  <!-- 默认设置为护眼背景 -->
+
+    <!-- 添加标题 -->
+    <h1>(快穿)吃肉之旅-爽文推荐</h1>
+    
+    <!-- 插入图片 -->
+    
+
+       
+    <!-- 动态插入内容区域 -->
+    <div id="content-container"></div> <!-- 动态内容容器 -->
+
+    <div class="button-group">
+        <button id="prevButton" onclick="prevPage()" style="display: none;">上一页</button>
+        <button id="nextButton" onclick="nextPage()" style="display: none;">下一页</button>
+    </div>
+
+    
+
+    <script>
+        let currentPage = 0;
+        let pages = [];
+
+        // 示例文本
+        const textContent = ` 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果你来到异能大学，你会选择什么系？无限穿越系如何？且看女主如何毕业！
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	叶萱是无限流穿越系的一名大四学生，临近毕业，即将参加毕业考试。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　无限流穿越系的考试向来是穿越学院最难的，叶萱当初报考的本是学院的大热专业金手指穿越系。谁知一分之差，被学院调剂到了无限流。经过四年无所事事的打鱼晒网，临到考试之前，她才终于着急起来。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　在学院论坛水了好几天，得到一大堆无限流考试就是在各种恐怖片里与非人搏斗，必须上天入地无所不能，一个不小心死状极为凄惨的情报后，叶萱整个人都不好了。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　早知道无限流这么苦逼，还不如復读一年再考金手指系呢。但是平时混日子可以，毕业考试一旦通不过，就得重修四年。她心急如焚，实在不知道自己这种从来没认真听过课的学渣该如何通过考试，思前想后，决定去找导师讨个人情。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱是无限流穿越系唯一的女生，因着她是个娇滴滴的小姑娘，导师平日里也对她颇为看顾。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　推开门，只见一个带着金丝边眼睛的青年男人正伏案工作。叶萱大喇喇往椅子上一座：「顾老师，下周就要考试了，我心里没底，您可得给我支个招。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　顾老师抬起头：「怎么，平时不好好上课，现在知道着急了？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「我知道错了。」叶萱从善如流地露出愧疚神情，「您不会真狠心让我毕不了业吧。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「我知道那些打打杀杀的场景你们女孩子应付不来。」顾老师扶了扶眼镜，「系里最近新开发了一套考试系统，你要是真不愿意去无限恐怖片里考试，我和系里打声招唿，用那套系统给你考试，如何？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「真的？」叶萱惊喜地瞪大眼睛，「那套系统的危险级数是多少？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「不多。」顾老师伸出三根手指，「三星。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　三星！叶萱顿时心花怒放，就算是金手指系的考试，危险级数也有六星。无限流的考试就更不用说了，危险级数直逼九星。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「丑话说在前头，这套系统还没有启用过，可能会出现突发状况，你真愿意？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「可能性有多少？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「大概百分之零点一吧。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「成了！」叶萱干脆地一拍巴掌，「我就用这套系统考试。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「爽快。」顾老师含笑点头，「我这就给系主任打电话。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　不知道为什么，叶萱觉得他镜片上闪烁的光芒略微古怪，应该是自己的错觉……
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　系里很快敲定了这件事，三天后，叶萱站在了一架古怪的机器前。顾老师指点她躺进连接舱，叶萱正打算闭上眼睛，临了忽然想到要问一个问题：「顾老师，这套考试系统的穿越主题是什么？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　无限流系的考试虽然是穿越好几个世界，但都会有一个主题。之前那套系统的主题是恐怖片，这套新系统危险级数不高，应该是校园文之类的吧。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「哦，主题啊。」顾老师一边盖上连接舱的盖子，一边意味深长地笑了笑，「你绝对猜不到。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「是什么？」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「是 肉文。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「诶？等等，你说什么？主题是什么？！」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　 肉文？！！！
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　擦一声，连接舱的盖子被严实地盖上了。叶萱的身周腾起一阵蓝光，她身不由己地开始陷入昏沉之中。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　还没把顾老师刚刚透露出的惊人消息消化完，就听舱外的男人恶劣地笑道：「对了，差点忘记告诉你。要是完不成每一阶段的任务，就得永远留在那里了。所以，千万要完成哦，小萱~」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　小萱你妹啊！顾寅诚，你给我等着！
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　#
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　东阳洲，沧澜派内，叶萱从迷梦中悠悠醒转。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　甫一睁开眼，她便立刻将四周打量了一遍。这是一间宽敞的洞府，屋内虽无金碧辉煌的雕饰，但桌是白玉桌，椅是琉璃椅。一草一木，乍然看去素净淡简，却又透着内敛的精緻贵重。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱又看向自己，这具身体乃是个小女孩。穿着身浅蓝色衣裙，一头乌髮松松挽起，在头上扎了个可爱的小髻。身量未足，但生的玉雪可爱，一眼望去，便知长大后必是个美人。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　此时，她已在脑海里理顺了所有事情。显然，自己是被顾老师，不对，顾寅诚坑了。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　眼下这是叶萱穿越的第一个世界，也是她考试的第一阶段。这个考试系统为考生设定的任务很简单，考生穿越到肉文之中，取代肉文中的女性角色，达成该女性角色的心愿，即可过关。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　而这个心愿，一般是和该女性角色最希望的人上床。而到底要上几次床才算完成心愿，取决于该女性角色的意愿。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　望着透明面板上这一行行字，叶萱差点没背过气去。虽然她平时经常在什么哔PO啊，哔马上看点小黄文，但自己还是个黄花大闺女好吗！任务是和男人上床，这到底是闹哪样！
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　但任务完不成，就得永远待在任务世界，叶萱是绝对不会接受的。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　她不停地给自己做心理建设，没关系，就当玩全息十八禁游戏了，反正用的也不是自己的身体。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　就这么自我宽慰了一番，叶萱才继续浏览任务面板。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　她穿越的第一个世界，是一个修仙世界。任务角色也叫叶萱，是这个世界第一大修仙门派，沧澜派的真传弟子。叶萱如今年方十三，尚在襁褓之中时，就被师父捡回山门，抚育至今。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　而叶萱的攻略目标，就是这具身体的授业恩师，沧澜派奉真殿长老，张衍。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　看到这里，叶萱不由啧了啧嘴。原身这小姑娘还真是，竟然对自己视同父亲的师父产生了背德之情。可惜的是，这位奉真殿长老一心向道，小姑娘明示暗示好几次，他愣是一点反应都没有。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　想来也是，对着个十三岁的幼女，还是自己亲手养大的，能有什么反应，这小姑娘也太急切了点。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　反正任务世界内的时间流速和现实世界是不一样的，而考试系统又没有规定完成时限，叶萱乐得在这里多呆几年。做做餐风饮露的仙人，每天腾云驾雾，感觉一定不错。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　喜滋滋地做了决定，叶萱打算先去看看攻略目标。毕竟以后要和他上床嘛，还是熟一点比较好。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　她刚一迈出门，剎那间，只觉天宽地广。原来叶萱的洞府筑在一处高绝的陡崖之上，放眼望去，脚下是深杳的雾霭，不时有飞鹤在云间穿行。云端之上，一轮金日灿灿生辉，映着远方的飞阁高殿、玉楼金阙，直教人如坠仙境。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　那碧天之中，忽而飞来一道剑光，须臾便到了叶萱面前。剑上跳下个青衣童子，一见叶萱，便露出恭敬的笑容：「叶师叔，您醒了？师叔祖有事召您呢。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「唔。」叶萱含煳地点点头，原身的师父张衍在沧澜派中辈分极高，连着叶萱也跟着沾光，人人见了她这十三岁的小姑娘，都得恭恭敬敬地唤上一声师叔。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　说曹操曹操便到，叶萱正好也要去见自己这便宜师父，乐得有人带路。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　当下，她从袖中取出只纸鹤，轻轻一吹，那纸鹤便化为一只身形颀长的白鹤，引颈清鸣一声，恭顺地朝叶萱垂下头。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　穿越之后，叶萱不仅继承了原身的记忆，还拥有原身掌握的全部技能。是以，她虽是第一次见到如此神异的情景，心中也不害怕。施施然骑上白鹤，跟着那童子朝前飞去。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　一路飞过无数华美的楼阁，终于，那童子停在一座高耸入云的宫殿前。殿前的匾额上，上书奉真殿三个大字，正是张衍的洞府。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱朝童子挥了挥手，示意他自行退下。她深吸一口气，就要见到攻略目标了，张衍与原身毕竟是师徒，朝夕相处，难保他不会看出异常。修仙世界，又多有夺舍这种事发生，要是自己被当做什么魔门奸细抓住……
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　她正在胡思乱想，忽听的殿内传来淡淡一道男声：「既已到了，又站在外面做什么。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　这声音低沉醇厚，却又彷如金钟玉磬，敲在人耳中，只觉一阵拨人心弦的痒。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱心中一突，又觉得这声音着实好听，当下低着头，缓步走进了奉真殿。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　殿内宽阔幽静，除了几个侍立在门边的童子，却丝毫不见张衍。叶萱循着原身的记忆，熟门熟路地穿过大殿，走过一条长长的迴廊，又拐过好几座假山，终于，在一片断崖前见到了一个高大的身影。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　那身影穿着一袭玄色云纹道袍，头戴白玉冠，正背对叶萱，望着远处重叠的云霭。他双手背负在后，宽大的袍袖外，露出一双修长大手，十指骨节分明，十分有力。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱忍不住吞了吞口水，也不知是因为紧张，还是为这一双美手。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「师父。」她轻声唤道，「弟子来了。」
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「嗯。」张衍应了一声，转过了身。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　此时，恰有一阵清风徐来，吹得张衍广袖猎猎、巾扬袍舞。他身后云团翻涌，便如一阵滚滚海潮，那张俊美的面上却是云淡风轻、无悲无喜。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　「阿萱。」只听张衍淡然地唤道。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　叶萱耳中嗡的一声，立刻就什么都不知道，心中只有一个无比执着，无比强烈的念头——
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　我爱你，师父，我一定要得到你！不管是你的人还是你的心，全部，全部都是我的！
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　她用尽全身力气，才抑制住朝张衍扑过去的慾望，手心满是冷汗。完蛋了，叶萱无奈地想，她不仅继承了原身的记忆和技能，还全盘继承了原身对攻略目标的感情。
+	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	　　在任务世界舒舒服服过上几年的计画还没开始，就宣告失败。她必须要马上推倒张衍，因为她一分一秒都忍不住了！
+
+
+
+        `;
+
+        // 动态生成分页内容
+        function generatePages() {
+            const container = document.getElementById("content-container");
+            const chapters = textContent.split(/(第\d+章)/).filter(Boolean);
+            let pageContent = '';
+            let page = document.createElement('div');
+            page.classList.add('page');
+            
+            let isFirstChapter = true;
+
+            chapters.forEach((item, index) => {
+                if (item.match(/第\d+章/)) {
+                    // 如果是第一章，不进行分页，直接显示
+                    if (isFirstChapter) {
+                        pageContent += `<h2>${item}</h2>`; // 显示第1章
+                        isFirstChapter = false;
+                    } else {
+                        // 后续章节进行分页
+                        if (pageContent) {
+                            page.innerHTML = pageContent;
+                            container.appendChild(page);
+                            pages.push(page);
+                        }
+                        page = document.createElement('div');
+                        page.classList.add('page');
+                        pageContent = `<h2>${item}</h2>`;
+                    }
+                } else {
+                    // 将每行文本都包裹在 <p> 标签中，确保每行都显示为段落
+                    const paragraphs = item.split('\n');
+                    paragraphs.forEach(paragraph => {
+                        pageContent += `<p>${paragraph.trim()}</p>`;
+                    });
+                }
+            });
+
+            if (pageContent) {
+                page.innerHTML = pageContent;
+                container.appendChild(page);
+                pages.push(page);
+            }
+
+            pages[currentPage].classList.add('active');
+            updateButtons();
+        }
+
+        // 切换字体大小的函数
+        function changeFontSize(size) {
+            // 遍历所有分页内容，设置相同的字体大小
+            pages.forEach(page => {
+                page.classList.remove('small', 'medium', 'large');
+                page.classList.add(size);
+            });
+        }
+
+        // 改变背景色的函数
+        function changeBackground(mode) {
+            const body = document.getElementById('body');
+            
+            // 根据选择的背景模式，切换背景
+            body.classList.remove('light', 'eye-care', 'night');
+            body.classList.add(mode);
+        }
+
+        // 更新分页按钮的显示状态
+        function updateButtons() {
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            // 如果是第一页，隐藏“上一页”按钮
+            if (currentPage === 0) {
+                prevButton.style.display = 'none';
+            } else {
+                prevButton.style.display = 'inline-block';
+            }
+
+            // 如果是最后一页，隐藏“下一页”按钮
+            if (currentPage === pages.length - 1) {
+                nextButton.style.display = 'none';
+            } else {
+                nextButton.style.display = 'inline-block';
+            }
+        }
+
+        // 翻到上一页
+        function prevPage() {
+            if (currentPage > 0) {
+                pages[currentPage].classList.remove('active');
+                currentPage--;
+                pages[currentPage].classList.add('active');
+                updateButtons();
+            }
+        }
+
+        // 翻到下一页
+        function nextPage() {
+            if (currentPage < pages.length - 1) {
+                pages[currentPage].classList.remove('active');
+                currentPage++;
+                pages[currentPage].classList.add('active');
+                updateButtons();
+            }
+        }
+
+        // 初始化分页并显示第一页的内容
+        window.onload = function() {
+            generatePages();  // 生成分页内容
+            pages[currentPage].classList.add('active'); // 显示第一页
+            updateButtons();
+        };
+    </script>
+</body>
+</html>
