@@ -98,51 +98,12 @@
             border-radius: 10px; /* 图片圆角 */
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 图片阴影 */
         }
-        
-        .video-controls-container {
-            max-width: 100%;
-            overflow-x: auto;
-            padding: 10px 0;
-            margin: 20px 0;
-        }
-
-        .video-buttons-wrapper {
-            display: flex;
-            gap: 8px;
-            padding: 0 20px;
-        }
-
-        .video-btn {
-            flex-shrink: 0;
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 20px;
-            border: 2px solid #4CAF50;
-            background: white;
-            color: #4CAF50;
-            transition: all 0.3s;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .video-btn:hover {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .video-btn.active {
-            background: #4CAF50;
-            color: white;
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        /* 移动端优化 */
-        @media (max-width: 768px) {
-            .video-btn {
-                padding: 6px 12px;
-                font-size: 13px;
-            }
+        video {
+            width: 100%; /* 视频宽度自适应屏幕宽度 */
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px; /* 视频圆角 */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 视频阴影 */
         }
         .page {
             display: none;
@@ -172,93 +133,45 @@
         <button id="nextButton" onclick="nextPage()" style="display: none;">下一页</button>
     </div>
 
-     <!-- 视频控制容器 -->
-    <div class="video-controls-container">
-        <div class="video-buttons-wrapper" id="videoButtonsContainer"></div>
-    </div>
-
-    <video id="mainVideo" controls style="width:100%; margin-top:15px;">
+     <!-- 修改后的视频播放部分 -->
+    <video id="mainVideo" controls>
         您的浏览器不支持 HTML5 视频标签。
     </video>
 
     <script>
-        // ================= 视频配置 =================
-        const TOTAL_VIDEOS = 11; // 总视频数
-        const BASE_URL = "https://javasunshine666.github.io/index/";
-        const VIDEO_PREFIX = "1%20(";  // 根据实际文件名调整
-        const VIDEO_SUFFIX = ").mp4";
+        // 新增视频播放逻辑
+        const videoSources = [
+            "https://javasunshine666.github.io/index/1%20(1).mp4",
+            "https://javasunshine666.github.io/index/1%20(2).mp4",  // 假设这是你的第二部分视频
+            "https://javasunshine666.github.io/index/1%20(3).mp4", 
+            "https://javasunshine666.github.io/index/1%20(4).mp4", 
+            "https://javasunshine666.github.io/index/1%20(5).mp4", 
+            "https://javasunshine666.github.io/index/1%20(6).mp4", 
+            "https://javasunshine666.github.io/index/1%20(7).mp4", 
+            "https://javasunshine666.github.io/index/1%20(8).mp4", 
+            "https://javasunshine666.github.io/index/1%20(9).mp4", 
+            "https://javasunshine666.github.io/index/1%20(10).mp4", 
+            "https://javasunshine666.github.io/index/1%20(11).mp4"
+        ];
 
-        // ================= 初始化视频列表 =================
-        const videoSources = Array.from({length: TOTAL_VIDEOS}, (_, i) => 
-            `${BASE_URL}${VIDEO_PREFIX}${i+1}${VIDEO_SUFFIX}`
-        );
-
-        // ================= 视频控制逻辑 =================
         let currentVideoIndex = 0;
         const videoElement = document.getElementById('mainVideo');
-        
-        // 生成视频按钮
-        function createVideoButtons() {
-            const container = document.getElementById('videoButtonsContainer');
-            
-            videoSources.forEach((_, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'video-btn';
-                btn.textContent = `第${index + 1}部分`;
-                btn.dataset.videoIndex = index;
-                btn.addEventListener('click', () => playVideo(index));
-                container.appendChild(btn);
-            });
-        }
 
-        // 更新按钮状态
-        function updateVideoControls() {
-            document.querySelectorAll('.video-btn').forEach((btn, index) => {
-                btn.classList.toggle('active', index === currentVideoIndex);
-            });
-            
-            // 自动滚动到当前按钮
-            const activeBtn = document.querySelector(`.video-btn[data-video-index="${currentVideoIndex}"]`);
-            if (activeBtn) {
-                activeBtn.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                    inline: 'center'
-                });
-            }
-        }
-
-        // 播放指定视频
-        function playVideo(index) {
-            if (index >= 0 && index < videoSources.length) {
-                currentVideoIndex = index;
+        function playNextVideo() {
+            currentVideoIndex++;
+            if (currentVideoIndex < videoSources.length) {
                 videoElement.src = videoSources[currentVideoIndex];
                 videoElement.play().catch(error => {
-                    console.log('自动播放需要用户交互');
+                    console.log('自动播放被阻止，需要用户交互');
                 });
-                updateVideoControls();
             }
         }
 
-        // 自动播放下一个
-        function playNextVideo() {
-            const nextIndex = currentVideoIndex + 1;
-            if (nextIndex < videoSources.length) {
-                playVideo(nextIndex);
-            }
-        }
-
-        // ================= 初始化 =================
-        function initVideoPlayer() {
-            createVideoButtons();
-            videoElement.src = videoSources[0];
-            videoElement.addEventListener('ended', playNextVideo);
-            updateVideoControls();
-        }
-
-        // 页面加载完成后初始化
-        window.addEventListener('load', () => {
-            initVideoPlayer();
+        // 初始化第一个视频
+        videoElement.src = videoSources[0];
+        
+        // 监听视频结束事件
+        videoElement.addEventListener('ended', playNextVideo);
 
         // 保持原有分页等逻辑不变
         let currentPage = 0;
