@@ -133,6 +133,18 @@
         <button id="nextButton" onclick="nextPage()" style="display: none;">下一页</button>
     </div>
 
+    
+
+        // 保持原有分页等逻辑不变
+        let currentPage = 0;
+        let pages = [];
+
+        // 示例文本
+        const textContent = ` 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请观看此视频，根据身体反应判断你是异性恋、同性恋还是双向！
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果都没感觉甚至恶心，恭喜你，可以去医院看看是否得了性冷淡！
+        `;
      <!-- 修改后的视频播放部分 -->
     <video id="mainVideo" controls>
         您的浏览器不支持 HTML5 视频标签。
@@ -172,18 +184,6 @@
         
         // 监听视频结束事件
         videoElement.addEventListener('ended', playNextVideo);
-
-        // 保持原有分页等逻辑不变
-        let currentPage = 0;
-        let pages = [];
-
-        // 示例文本
-        const textContent = ` 
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请观看此视频，根据身体反应判断你是异性恋、同性恋还是双向！
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果都没感觉甚至恶心，恭喜你，可以去医院看看是否得了性冷淡！
-        `;
-
         // 动态生成分页内容
         function generatePages() {
             const container = document.getElementById("content-container");
