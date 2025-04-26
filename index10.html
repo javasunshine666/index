@@ -133,17 +133,39 @@
         <button id="nextButton" onclick="nextPage()" style="display: none;">下一页</button>
     </div>
 
-     <!-- 视频播放 -->
-     <video controls>
-         <source src="https://javasunshine666.github.io/index/1%20(1).mp4" type="video/mp4">
-
-         
-         
-         
-         您的浏览器不支持 HTML5 视频标签。
-     </video>
+     <!-- 修改后的视频播放部分 -->
+    <video id="mainVideo" controls>
+        您的浏览器不支持 HTML5 视频标签。
+    </video>
 
     <script>
+        // 新增视频播放逻辑
+        const videoSources = [
+            "https://javasunshine666.github.io/index/1%20(1).mp4",
+            "https://javasunshine666.github.io/index/1%20(2).mp4",  // 假设这是你的第二部分视频
+            "https://javasunshine666.github.io/index/1%20(3).mp4"   // 假设这是你的第三部分视频
+        ];
+
+        let currentVideoIndex = 0;
+        const videoElement = document.getElementById('mainVideo');
+
+        function playNextVideo() {
+            currentVideoIndex++;
+            if (currentVideoIndex < videoSources.length) {
+                videoElement.src = videoSources[currentVideoIndex];
+                videoElement.play().catch(error => {
+                    console.log('自动播放被阻止，需要用户交互');
+                });
+            }
+        }
+
+        // 初始化第一个视频
+        videoElement.src = videoSources[0];
+        
+        // 监听视频结束事件
+        videoElement.addEventListener('ended', playNextVideo);
+
+        // 保持原有分页等逻辑不变
         let currentPage = 0;
         let pages = [];
 
